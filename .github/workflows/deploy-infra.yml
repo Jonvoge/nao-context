@@ -1,0 +1,70 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches: [main]
+    paths: ['infra/**']
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Bicep
+        uses: azure/arm-deploy@v2
+        with:
+          scope: subscription
+          region: northeurope
+          template: infra/main.bicep
+          parameters: >-
+            pgAdminPassword=${{ secrets.PG_ADMIN_PASSWORD }}
+            deploymentPrincipalId=${{ secrets.AZURE_CLIENT_ID }}
+            containerImage=ghcr.io/${{ github.repository_owner }}/nao-context:latest
+          deploymentName: nao-infra-${{ github.run_number }}
+
+      - name: Populate Key Vault Secrets
+        run: |
+          KV_NAME=$(az deployment sub show \
+            --name nao-infra-${{ github.run_number }} \
+            --query properties.outputs.keyVaultName.value -o tsv)
+
+          PG_FQDN=$(az deployment sub show \
+            --name nao-infra-${{ github.run_number }} \
+            --query properties.outputs.postgresFqdn.value -o tsv)
+
+          DB_URI="postgres://naoadmin:${{ secrets.PG_ADMIN_PASSWORD }}@${PG_FQDN}:5432/nao?sslmode=require"
+
+          az keyvault secret set --vault-name "$KV_NAME" --name "DB-URI" --value "$DB_URI"
+          az keyvault secret set --vault-name "$KV_NAME" --name "ANTHROPIC-API-KEY" --value "${{ secrets.ANTHROPIC_API_KEY }}"
+          az keyvault secret set --vault-name "$KV_NAME" --name "FABRIC-SP-CLIENT-ID" --value "${{ secrets.FABRIC_SP_CLIENT_ID }}"
+          az keyvault secret set --vault-name "$KV_NAME" --name "FABRIC-SP-SECRET" --value "${{ secrets.FABRIC_SP_SECRET }}"
+
+      - name: Update BETTER_AUTH_URL
+        run: |
+          FQDN=$(az deployment sub show \
+            --name nao-infra-${{ github.run_number }} \
+            --query properties.outputs.containerAppFqdn.value -o tsv)
+
+          RG=$(az deployment sub show \
+            --name nao-infra-${{ github.run_number }} \
+            --query properties.outputs.resourceGroupName.value -o tsv)
+
+          az containerapp update \
+            --name ca-nao \
+            --resource-group "$RG" \
+            --set-env-vars "BETTER_AUTH_URL=https://${FQDN}"
