@@ -2,5 +2,5 @@ using './main.bicep'
 
 param location = 'northeurope'
 param baseName = 'nao'
-param containerImage = 'ghcr.io/jonvoge/nao-context:latest'
+param containerImage = 'docker.io/getnao/nao:latest'
 // pgAdminPassword and deploymentPrincipalId supplied via GitHub Actions workflow

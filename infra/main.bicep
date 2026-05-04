@@ -11,7 +11,7 @@ param baseName string = 'nao'
 param pgAdminPassword string
 
 @description('Container image to deploy')
-param containerImage string = 'ghcr.io/jonvoge/nao-context:latest'
+param containerImage string = 'docker.io/getnao/nao:latest'
 
 @description('GitHub Actions SP principal ID (for Key Vault admin)')
 param deploymentPrincipalId string
