@@ -46,6 +46,13 @@ jobs:
       - name: Wait for RBAC propagation
         run: sleep 60
 
+      - name: Re-authenticate to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: Populate Key Vault Secrets
         run: |
           KV_NAME="${{ steps.bicep.outputs.keyVaultName }}"
