@@ -41,6 +41,28 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
             { name: 'FABRIC_SP_TENANT_ID', value: 'a7ed0222-1883-488c-8bbb-6ee4f043da6d' }
             { name: 'BETTER_AUTH_URL', value: 'https://placeholder.northeurope.azurecontainerapps.io' }
           ]
+          probes: [
+            {
+              type: 'startup'
+              httpGet: {
+                path: '/'
+                port: 5005
+              }
+              periodSeconds: 5
+              timeoutSeconds: 3
+              failureThreshold: 30
+            }
+            {
+              type: 'liveness'
+              httpGet: {
+                path: '/'
+                port: 5005
+              }
+              periodSeconds: 10
+              timeoutSeconds: 3
+              failureThreshold: 5
+            }
+          ]
         }
       ]
       scale: {
