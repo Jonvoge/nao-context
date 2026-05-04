@@ -37,7 +37,6 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
             memory: '1Gi'
           }
           env: [
-            { name: 'NAO_DEFAULT_PROJECT_PATH', value: '/app/project' }
             { name: 'FABRIC_SP_TENANT_ID', value: 'a7ed0222-1883-488c-8bbb-6ee4f043da6d' }
             { name: 'BETTER_AUTH_URL', value: 'https://placeholder.northeurope.azurecontainerapps.io' }
           ]
@@ -48,9 +47,9 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
                 path: '/'
                 port: 5005
               }
-              periodSeconds: 5
-              timeoutSeconds: 3
-              failureThreshold: 30
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 60
             }
             {
               type: 'liveness'
@@ -58,9 +57,9 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
                 path: '/'
                 port: 5005
               }
-              periodSeconds: 10
-              timeoutSeconds: 3
-              failureThreshold: 5
+              periodSeconds: 30
+              timeoutSeconds: 5
+              failureThreshold: 3
             }
           ]
         }
