@@ -69,14 +69,12 @@ module containerApp 'modules/containerApp.bicep' = {
 }
 
 // Grant Container App managed identity access to Key Vault secrets
-module keyVaultAppAccess 'modules/keyVault.bicep' = {
+module keyVaultAppAccess 'modules/keyVaultRoleAssignment.bicep' = {
   scope: rg
   name: 'keyVaultAppAccess'
   params: {
-    name: kvName
-    location: location
-    adminPrincipalId: deploymentPrincipalId
-    containerAppPrincipalId: containerApp.outputs.principalId
+    keyVaultName: kvName
+    principalId: containerApp.outputs.principalId
   }
 }
 

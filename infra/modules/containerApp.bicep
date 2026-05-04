@@ -51,14 +51,7 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
           identity: 'system'
         }
       ]
-      registries: [
-        {
-          server: 'ghcr.io'
-          username: ''
-          passwordSecretRef: ''
-          identity: 'system'
-        }
-      ]
+
     }
     template: {
       containers: [

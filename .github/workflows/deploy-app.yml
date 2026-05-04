@@ -43,6 +43,13 @@ jobs:
 
       - name: Deploy to Container Apps
         run: |
+          az containerapp registry set \
+            --name ca-nao \
+            --resource-group rg-nao-northeurope \
+            --server ghcr.io \
+            --username ${{ github.actor }} \
+            --password ${{ secrets.GHCR_TOKEN }}
+
           az containerapp update \
             --name ca-nao \
             --resource-group rg-nao-northeurope \
