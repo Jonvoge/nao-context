@@ -25,6 +25,12 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Get SP Object ID
+        id: sp
+        run: |
+          OID=$(az ad sp show --id ${{ secrets.AZURE_CLIENT_ID }} --query id -o tsv)
+          echo "objectId=$OID" >> "$GITHUB_OUTPUT"
+
       - name: Deploy Bicep
         uses: azure/arm-deploy@v2
         id: bicep
@@ -34,8 +40,11 @@ jobs:
           template: infra/main.bicep
           parameters: >-
             pgAdminPassword=${{ secrets.PG_ADMIN_PASSWORD }}
-            deploymentPrincipalId=${{ secrets.AZURE_CLIENT_ID }}
+            deploymentPrincipalId=${{ steps.sp.outputs.objectId }}
           deploymentName: nao-infra-${{ github.run_number }}
+
+      - name: Wait for RBAC propagation
+        run: sleep 60
 
       - name: Populate Key Vault Secrets
         run: |
