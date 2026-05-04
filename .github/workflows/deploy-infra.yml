@@ -27,6 +27,7 @@ jobs:
 
       - name: Deploy Bicep
         uses: azure/arm-deploy@v2
+        id: bicep
         with:
           scope: subscription
           region: northeurope
@@ -34,19 +35,12 @@ jobs:
           parameters: >-
             pgAdminPassword=${{ secrets.PG_ADMIN_PASSWORD }}
             deploymentPrincipalId=${{ secrets.AZURE_CLIENT_ID }}
-            containerImage=ghcr.io/${{ github.repository_owner }}/nao-context:latest
           deploymentName: nao-infra-${{ github.run_number }}
 
       - name: Populate Key Vault Secrets
         run: |
-          KV_NAME=$(az deployment sub show \
-            --name nao-infra-${{ github.run_number }} \
-            --query properties.outputs.keyVaultName.value -o tsv)
-
-          PG_FQDN=$(az deployment sub show \
-            --name nao-infra-${{ github.run_number }} \
-            --query properties.outputs.postgresFqdn.value -o tsv)
-
+          KV_NAME="${{ steps.bicep.outputs.keyVaultName }}"
+          PG_FQDN="${{ steps.bicep.outputs.postgresFqdn }}"
           DB_URI="postgres://naoadmin:${{ secrets.PG_ADMIN_PASSWORD }}@${PG_FQDN}:5432/nao?sslmode=require"
 
           az keyvault secret set --vault-name "$KV_NAME" --name "DB-URI" --value "$DB_URI"
@@ -54,17 +48,32 @@ jobs:
           az keyvault secret set --vault-name "$KV_NAME" --name "FABRIC-SP-CLIENT-ID" --value "${{ secrets.FABRIC_SP_CLIENT_ID }}"
           az keyvault secret set --vault-name "$KV_NAME" --name "FABRIC-SP-SECRET" --value "${{ secrets.FABRIC_SP_SECRET }}"
 
-      - name: Update BETTER_AUTH_URL
+      - name: Configure Container App secrets and env vars
         run: |
-          FQDN=$(az deployment sub show \
-            --name nao-infra-${{ github.run_number }} \
-            --query properties.outputs.containerAppFqdn.value -o tsv)
+          RG="${{ steps.bicep.outputs.resourceGroupName }}"
+          KV_NAME="${{ steps.bicep.outputs.keyVaultName }}"
+          FQDN="${{ steps.bicep.outputs.containerAppFqdn }}"
 
-          RG=$(az deployment sub show \
-            --name nao-infra-${{ github.run_number }} \
-            --query properties.outputs.resourceGroupName.value -o tsv)
+          # Wait for managed identity propagation
+          sleep 30
 
+          # Add Key Vault secret references to Container App
+          az containerapp secret set \
+            --name ca-nao \
+            --resource-group "$RG" \
+            --secrets \
+              db-uri=keyvaultref:https://${KV_NAME}.vault.azure.net/secrets/DB-URI,identityref:system \
+              anthropic-api-key=keyvaultref:https://${KV_NAME}.vault.azure.net/secrets/ANTHROPIC-API-KEY,identityref:system \
+              fabric-sp-client-id=keyvaultref:https://${KV_NAME}.vault.azure.net/secrets/FABRIC-SP-CLIENT-ID,identityref:system \
+              fabric-sp-secret=keyvaultref:https://${KV_NAME}.vault.azure.net/secrets/FABRIC-SP-SECRET,identityref:system
+
+          # Set env vars referencing secrets + update BETTER_AUTH_URL
           az containerapp update \
             --name ca-nao \
             --resource-group "$RG" \
-            --set-env-vars "BETTER_AUTH_URL=https://${FQDN}"
+            --set-env-vars \
+              "DB_URI=secretref:db-uri" \
+              "ANTHROPIC_API_KEY=secretref:anthropic-api-key" \
+              "FABRIC_SP_CLIENT_ID=secretref:fabric-sp-client-id" \
+              "FABRIC_SP_SECRET=secretref:fabric-sp-secret" \
+              "BETTER_AUTH_URL=https://${FQDN}"

@@ -64,7 +64,6 @@ module containerApp 'modules/containerApp.bicep' = {
     location: location
     environmentId: containerAppsEnv.outputs.id
     containerImage: containerImage
-    keyVaultName: kvName
   }
 }
 
