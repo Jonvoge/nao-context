@@ -1,0 +1,12 @@
+.env
+.env.example
+venv/
+.git/
+.github/
+infra/
+docs/superpowers/
+__pycache__/
+.DS_Store
+*.md
+!RULES.md
+!queries/examples.md
