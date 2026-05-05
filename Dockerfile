@@ -1,5 +1,8 @@
 FROM getnao/nao:latest
 
+# Remove example project from base image
+RUN rm -rf /app/example
+
 # Install ODBC Driver 18 for SQL Server (required for Fabric connections)
 RUN apt-get update -qq \
     && apt-get install -y -qq --no-install-recommends gnupg2 curl \
