@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
     paths-ignore: ['infra/**', 'docs/**', '*.md', '!RULES.md']
+  schedule:
+    - cron: '0 6 * * 1'  # Every Monday at 06:00 UTC
   workflow_dispatch:
 
 permissions:
