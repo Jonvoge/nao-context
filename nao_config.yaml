@@ -3,10 +3,10 @@ project_name: inspari-nao
 databases:
   - name: retail-demo-db
     type: fabric
-    server: eibo3j4ddcgerc53n3spaq62nu-ljqt5nlzvp4utphqm4squnhwgm.datawarehouse.fabric.microsoft.com
+    host: eibo3j4ddcgerc53n3spaq62nu-ljqt5nlzvp4utphqm4squnhwgm.datawarehouse.fabric.microsoft.com
     database: RetailDemoDB
     schema_name: dbo
-    auth_method: azure_service_principal
+    auth_mode: azure_service_principal
     client_id: "{{ env('FABRIC_SP_CLIENT_ID') }}"
     client_secret: "{{ env('FABRIC_SP_SECRET') }}"
     tenant_id: "{{ env('FABRIC_SP_TENANT_ID') }}"
@@ -17,10 +17,25 @@ databases:
 
   - name: contoso-lakehouse
     type: fabric
-    server: eibo3j4ddcgerc53n3spaq62nu-hcdqqkllll5uxnxa3jtidw25wu.datawarehouse.fabric.microsoft.com
+    host: eibo3j4ddcgerc53n3spaq62nu-hcdqqkllll5uxnxa3jtidw25wu.datawarehouse.fabric.microsoft.com
     database: ContosoLH
     schema_name: dbo
-    auth_method: azure_service_principal
+    auth_mode: azure_service_principal
+    client_id: "{{ env('FABRIC_SP_CLIENT_ID') }}"
+    client_secret: "{{ env('FABRIC_SP_SECRET') }}"
+    tenant_id: "{{ env('FABRIC_SP_TENANT_ID') }}"
+    templates:
+      - columns
+      - how_to_use
+      - preview
+
+  - name: strava-db
+    type: fabric
+    host: eibo3j4ddcgerc53n3spaq62nu-vppfrpf6dzbedh4lnnam5lfguy.database.fabric.microsoft.com
+    port: 1433
+    database: dbStrava-30ddc9c4-0a61-4785-b52a-6abb55c44ff1
+    schema_name: dbo
+    auth_mode: azure_service_principal
     client_id: "{{ env('FABRIC_SP_CLIENT_ID') }}"
     client_secret: "{{ env('FABRIC_SP_SECRET') }}"
     tenant_id: "{{ env('FABRIC_SP_TENANT_ID') }}"
@@ -33,3 +48,4 @@ llm:
   provider: anthropic
   api_key: "{{ env('ANTHROPIC_API_KEY') }}"
   annotation_model: claude-sonnet-4-6
+

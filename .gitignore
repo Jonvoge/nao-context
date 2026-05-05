@@ -2,7 +2,6 @@
 venv/
 __pycache__/
 .DS_Store
-databases/*
-!databases/.gitkeep
+databases/.gitkeep
 *.json.bak
 infra/main.json

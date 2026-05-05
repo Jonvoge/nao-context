@@ -1,0 +1,30 @@
+# viewForMartin
+
+**Dataset:** `dbo`
+
+## Columns (24)
+
+- CustomerKey (int32)
+- GeoAreaKey (int32)
+- StartDT (timestamp(6))
+- EndDT (timestamp(6))
+- Continent (string(8000))
+- Gender (string(8000))
+- Title (string(8000))
+- GivenName (string(8000))
+- MiddleInitial (string(8000))
+- Surname (string(8000))
+- StreetAddress (string(8000))
+- City (string(8000))
+- State (string(8000))
+- StateFull (string(8000))
+- ZipCode (string(8000))
+- Country (string(8000))
+- CountryFull (string(8000))
+- Birthday (timestamp(6))
+- Age (int32)
+- Occupation (string(8000))
+- Company (string(8000))
+- Vehicle (string(8000))
+- Latitude (decimal(20, 5))
+- Longitude (decimal(20, 5))

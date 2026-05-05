@@ -1,0 +1,16 @@
+# sales - Preview
+
+**Dataset:** `dbo`
+
+## Rows (10)
+
+- {"OrderKey": 406000, "LineNumber": 6, "OrderDate": "2016-02-10 00:00:00", "DeliveryDate": "2016-02-21 00:00:00", "CustomerKey": 577692, "StoreKey": 999999, "ProductKey": 1631, "Quantity": 1, "UnitPrice": "7.59600", "NetPrice": "6.76044", "UnitCost": "3.49200", "CurrencyCode": "EUR", "ExchangeRate": "0.88834"}
+- {"OrderKey": 645009, "LineNumber": 6, "OrderDate": "2016-10-06 00:00:00", "DeliveryDate": "2016-10-13 00:00:00", "CustomerKey": 768028, "StoreKey": 999999, "ProductKey": 1072, "Quantity": 1, "UnitPrice": "683.20000", "NetPrice": "683.20000", "UnitCost": "226.35200", "CurrencyCode": "EUR", "ExchangeRate": "0.89405"}
+- {"OrderKey": 917006, "LineNumber": 6, "OrderDate": "2017-07-05 00:00:00", "DeliveryDate": "2017-07-11 00:00:00", "CustomerKey": 576841, "StoreKey": 999999, "ProductKey": 699, "Quantity": 1, "UnitPrice": "392.00000", "NetPrice": "348.88000", "UnitCost": "180.26000", "CurrencyCode": "EUR", "ExchangeRate": "0.88269"}
+- {"OrderKey": 1321015, "LineNumber": 6, "OrderDate": "2018-08-13 00:00:00", "DeliveryDate": "2018-08-18 00:00:00", "CustomerKey": 695941, "StoreKey": 999999, "ProductKey": 1490, "Quantity": 1, "UnitPrice": "206.40000", "NetPrice": "206.40000", "UnitCost": "105.23200", "CurrencyCode": "EUR", "ExchangeRate": "0.87696"}
+- {"OrderKey": 2086002, "LineNumber": 6, "OrderDate": "2020-09-16 00:00:00", "DeliveryDate": "2020-09-18 00:00:00", "CustomerKey": 587204, "StoreKey": 999999, "ProductKey": 1526, "Quantity": 1, "UnitPrice": "333.20000", "NetPrice": "293.21600", "UnitCost": "153.23000", "CurrencyCode": "EUR", "ExchangeRate": "0.84253"}
+- {"OrderKey": 2089005, "LineNumber": 6, "OrderDate": "2020-09-19 00:00:00", "DeliveryDate": "2020-09-23 00:00:00", "CustomerKey": 558019, "StoreKey": 999999, "ProductKey": 2418, "Quantity": 1, "UnitPrice": "66.59100", "NetPrice": "66.59100", "UnitCost": "30.62700", "CurrencyCode": "EUR", "ExchangeRate": "0.84509"}
+- {"OrderKey": 2275005, "LineNumber": 6, "OrderDate": "2021-03-24 00:00:00", "DeliveryDate": "2021-03-28 00:00:00", "CustomerKey": 544376, "StoreKey": 999999, "ProductKey": 428, "Quantity": 1, "UnitPrice": "1453.50000", "NetPrice": "1453.50000", "UnitCost": "481.57500", "CurrencyCode": "EUR", "ExchangeRate": "0.84567"}
+- {"OrderKey": 2347001, "LineNumber": 6, "OrderDate": "2021-06-04 00:00:00", "DeliveryDate": "2021-06-07 00:00:00", "CustomerKey": 403604, "StoreKey": 999999, "ProductKey": 518, "Quantity": 1, "UnitPrice": "1303.50000", "NetPrice": "1290.46500", "UnitCost": "431.88000", "CurrencyCode": "EUR", "ExchangeRate": "0.82529"}
+- {"OrderKey": 2474011, "LineNumber": 6, "OrderDate": "2021-10-09 00:00:00", "DeliveryDate": "2021-10-12 00:00:00", "CustomerKey": 864119, "StoreKey": 999999, "ProductKey": 1581, "Quantity": 1, "UnitPrice": "284.70000", "NetPrice": "253.38300", "UnitCost": "94.32800", "CurrencyCode": "EUR", "ExchangeRate": "0.86438"}
+- {"OrderKey": 2501016, "LineNumber": 6, "OrderDate": "2021-11-05 00:00:00", "DeliveryDate": "2021-11-10 00:00:00", "CustomerKey": 518303, "StoreKey": 999999, "ProductKey": 1479, "Quantity": 1, "UnitPrice": "434.00000", "NetPrice": "407.96000", "UnitCost": "199.58400", "CurrencyCode": "EUR", "ExchangeRate": "0.86813"}
