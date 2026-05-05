@@ -1,0 +1,39 @@
+properties:
+  template:
+    scale:
+      minReplicas: 1
+      maxReplicas: 2
+    containers:
+      - name: nao
+        image: docker.io/getnao/nao:latest
+        resources:
+          cpu: 0.5
+          memory: 1Gi
+        env:
+          - name: FABRIC_SP_TENANT_ID
+            value: a7ed0222-1883-488c-8bbb-6ee4f043da6d
+          - name: BETTER_AUTH_URL
+            value: https://ca-nao.salmonsand-e454fc12.northeurope.azurecontainerapps.io
+          - name: DB_URI
+            secretRef: db-uri
+          - name: ANTHROPIC_API_KEY
+            secretRef: anthropic-api-key
+          - name: FABRIC_SP_CLIENT_ID
+            secretRef: fabric-sp-client-id
+          - name: FABRIC_SP_SECRET
+            secretRef: fabric-sp-secret
+        probes:
+          - type: Startup
+            httpGet:
+              path: /
+              port: 5005
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 60
+          - type: Liveness
+            httpGet:
+              path: /
+              port: 5005
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
