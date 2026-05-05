@@ -1,5 +1,5 @@
 FROM getnao/nao:latest
 
-COPY . /app/project/
+COPY . /app/context/
 
-WORKDIR /app/project
+WORKDIR /app/context
