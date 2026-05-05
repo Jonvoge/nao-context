@@ -39,6 +39,7 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
           env: [
             { name: 'FABRIC_SP_TENANT_ID', value: 'a7ed0222-1883-488c-8bbb-6ee4f043da6d' }
             { name: 'BETTER_AUTH_URL', value: 'https://placeholder.northeurope.azurecontainerapps.io' }
+            { name: 'NAO_DEFAULT_PROJECT_PATH', value: '/app/context' }
           ]
           probes: [
             {
