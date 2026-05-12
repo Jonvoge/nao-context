@@ -1,0 +1,48 @@
+name: Cleanup Preview
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  APP_NAME: ca-nao
+  RESOURCE_GROUP: rg-nao-northeurope
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Derive revision label
+        id: label
+        run: |
+          RAW="pr-${{ github.event.pull_request.number }}"
+          LABEL=$(echo "$RAW" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | head -c 64)
+          echo "label=$LABEL" >> "$GITHUB_OUTPUT"
+
+      - name: Deactivate preview revision
+        run: |
+          REVISION=$(az containerapp revision list \
+            --name ${{ env.APP_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --query "[?properties.trafficWeight==\`0\` && contains(name, '${{ steps.label.outputs.label }}')].name" \
+            -o tsv | head -1)
+
+          if [ -n "$REVISION" ]; then
+            az containerapp revision deactivate \
+              --name ${{ env.APP_NAME }} \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --revision "$REVISION"
+            echo "Deactivated revision: $REVISION"
+          else
+            echo "No matching preview revision found for label ${{ steps.label.outputs.label }}"
+          fi
