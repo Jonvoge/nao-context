@@ -62,13 +62,6 @@ jobs:
 
       - name: Deploy to Container Apps
         run: |
-          az containerapp registry set \
-            --name ${{ env.APP_NAME }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --server ghcr.io \
-            --username ${{ github.actor }} \
-            --password ${{ secrets.GHCR_TOKEN }}
-
           az containerapp update \
             --name ${{ env.APP_NAME }} \
             --resource-group ${{ env.RESOURCE_GROUP }} \
@@ -117,13 +110,6 @@ jobs:
             --query "properties.configuration.ingress.fqdn" -o tsv)
 
           PREVIEW_URL="https://${{ steps.label.outputs.label }}--${FQDN}"
-
-          az containerapp registry set \
-            --name ${{ env.APP_NAME }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --server ghcr.io \
-            --username ${{ github.actor }} \
-            --password ${{ secrets.GHCR_TOKEN }}
 
           az containerapp update \
             --name ${{ env.APP_NAME }} \
