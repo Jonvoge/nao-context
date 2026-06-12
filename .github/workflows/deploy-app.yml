@@ -74,6 +74,16 @@ jobs:
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image-tag }}
 
+          LATEST=$(az containerapp revision list \
+            --name ${{ env.APP_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --query "sort_by([], &properties.createdTime)[-1].name" -o tsv)
+
+          az containerapp ingress traffic set \
+            --name ${{ env.APP_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --revision-weight ${LATEST}=100
+
   deploy-preview:
     needs: build
     if: github.event_name == 'pull_request'

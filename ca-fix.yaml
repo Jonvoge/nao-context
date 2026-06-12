@@ -14,6 +14,8 @@ properties:
             value: a7ed0222-1883-488c-8bbb-6ee4f043da6d
           - name: BETTER_AUTH_URL
             value: https://ca-nao.salmonsand-e454fc12.northeurope.azurecontainerapps.io
+          - name: BETTER_AUTH_SECRET
+            secretRef: better-auth-secret
           - name: DB_URI
             secretRef: db-uri
           - name: ANTHROPIC_API_KEY

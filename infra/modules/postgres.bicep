@@ -45,6 +45,17 @@ resource firewallRule 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2
   }
 }
 
+// Disable SSL enforcement — Container Apps network traffic is already encrypted at the Azure layer,
+// and the postgres.js driver in nao:latest doesn't pass sslmode from connection URL params.
+resource sslParam 'Microsoft.DBforPostgreSQL/flexibleServers/configurations@2023-12-01-preview' = {
+  parent: pg
+  name: 'require_secure_transport'
+  properties: {
+    value: 'off'
+    source: 'user-override'
+  }
+}
+
 // Create the nao database
 resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2023-12-01-preview' = {
   parent: pg
@@ -56,4 +67,4 @@ resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2023-12-0
 }
 
 output fqdn string = pg.properties.fullyQualifiedDomainName
-output connectionString string = 'postgres://${adminLogin}:PASSWORD_PLACEHOLDER@${pg.properties.fullyQualifiedDomainName}:5432/nao?sslmode=require'
+output connectionString string = 'postgres://${adminLogin}:PASSWORD_PLACEHOLDER@${pg.properties.fullyQualifiedDomainName}:5432/nao'
