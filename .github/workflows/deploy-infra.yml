@@ -35,7 +35,7 @@ jobs:
         uses: azure/arm-deploy@v2
         id: bicep
         with:
-          scope: resourceGroup
+          scope: resourcegroup
           resourceGroupName: rg-nao
           template: infra/main.bicep
           parameters: >-
