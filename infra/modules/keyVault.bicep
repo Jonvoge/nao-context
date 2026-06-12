@@ -16,20 +16,18 @@ resource kv 'Microsoft.KeyVault/vaults@2023-07-01' = {
       name: 'standard'
     }
     tenantId: subscription().tenantId
-    enableRbacAuthorization: true
+    enableRbacAuthorization: false
     enableSoftDelete: true
     softDeleteRetentionInDays: 7
-  }
-}
-
-// Admin gets full secrets management
-resource adminRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(kv.id, adminPrincipalId, 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')
-  scope: kv
-  properties: {
-    principalId: adminPrincipalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7') // Key Vault Secrets Officer
-    principalType: 'ServicePrincipal'
+    accessPolicies: [
+      {
+        tenantId: subscription().tenantId
+        objectId: adminPrincipalId
+        permissions: {
+          secrets: ['get', 'list', 'set', 'delete', 'backup', 'restore', 'recover', 'purge']
+        }
+      }
+    ]
   }
 }
 
