@@ -21,7 +21,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: jonvoge/nao-context
   APP_NAME: ca-nao
-  RESOURCE_GROUP: rg-nao-northeurope
+  RESOURCE_GROUP: rg-nao
 
 jobs:
   build:

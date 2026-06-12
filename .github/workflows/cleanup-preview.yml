@@ -10,7 +10,7 @@ permissions:
 
 env:
   APP_NAME: ca-nao
-  RESOURCE_GROUP: rg-nao-northeurope
+  RESOURCE_GROUP: rg-nao
 
 jobs:
   cleanup:

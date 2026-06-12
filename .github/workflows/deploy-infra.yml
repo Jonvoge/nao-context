@@ -35,8 +35,8 @@ jobs:
         uses: azure/arm-deploy@v2
         id: bicep
         with:
-          scope: subscription
-          region: northeurope
+          scope: resourceGroup
+          resourceGroupName: rg-nao
           template: infra/main.bicep
           parameters: >-
             pgAdminPassword=${{ secrets.PG_ADMIN_PASSWORD }}
@@ -57,12 +57,13 @@ jobs:
         run: |
           KV_NAME="${{ steps.bicep.outputs.keyVaultName }}"
           PG_FQDN="${{ steps.bicep.outputs.postgresFqdn }}"
-          DB_URI="postgres://naoadmin:${{ secrets.PG_ADMIN_PASSWORD }}@${PG_FQDN}:5432/nao?sslmode=require"
+          DB_URI="postgres://naoadmin:${{ secrets.PG_ADMIN_PASSWORD }}@${PG_FQDN}:5432/nao"
 
           az keyvault secret set --vault-name "$KV_NAME" --name "DB-URI" --value "$DB_URI"
           az keyvault secret set --vault-name "$KV_NAME" --name "ANTHROPIC-API-KEY" --value "${{ secrets.ANTHROPIC_API_KEY }}"
           az keyvault secret set --vault-name "$KV_NAME" --name "FABRIC-SP-CLIENT-ID" --value "${{ secrets.FABRIC_SP_CLIENT_ID }}"
           az keyvault secret set --vault-name "$KV_NAME" --name "FABRIC-SP-SECRET" --value "${{ secrets.FABRIC_SP_SECRET }}"
+          az keyvault secret set --vault-name "$KV_NAME" --name "BETTER-AUTH-SECRET" --value "${{ secrets.BETTER_AUTH_SECRET }}"
 
       - name: Configure Container App secrets and env vars
         run: |
@@ -81,7 +82,8 @@ jobs:
               db-uri=keyvaultref:https://${KV_NAME}.vault.azure.net/secrets/DB-URI,identityref:system \
               anthropic-api-key=keyvaultref:https://${KV_NAME}.vault.azure.net/secrets/ANTHROPIC-API-KEY,identityref:system \
               fabric-sp-client-id=keyvaultref:https://${KV_NAME}.vault.azure.net/secrets/FABRIC-SP-CLIENT-ID,identityref:system \
-              fabric-sp-secret=keyvaultref:https://${KV_NAME}.vault.azure.net/secrets/FABRIC-SP-SECRET,identityref:system
+              fabric-sp-secret=keyvaultref:https://${KV_NAME}.vault.azure.net/secrets/FABRIC-SP-SECRET,identityref:system \
+              better-auth-secret=keyvaultref:https://${KV_NAME}.vault.azure.net/secrets/BETTER-AUTH-SECRET,identityref:system
 
           # Set env vars referencing secrets + update BETTER_AUTH_URL
           az containerapp update \
@@ -92,4 +94,5 @@ jobs:
               "ANTHROPIC_API_KEY=secretref:anthropic-api-key" \
               "FABRIC_SP_CLIENT_ID=secretref:fabric-sp-client-id" \
               "FABRIC_SP_SECRET=secretref:fabric-sp-secret" \
+              "BETTER_AUTH_SECRET=secretref:better-auth-secret" \
               "BETTER_AUTH_URL=https://${FQDN}"
