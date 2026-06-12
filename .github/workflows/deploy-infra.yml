@@ -72,7 +72,7 @@ jobs:
           FQDN="${{ steps.bicep.outputs.containerAppFqdn }}"
 
           # Wait for managed identity propagation
-          sleep 30
+          sleep 120
 
           # Add Key Vault secret references to Container App
           az containerapp secret set \
